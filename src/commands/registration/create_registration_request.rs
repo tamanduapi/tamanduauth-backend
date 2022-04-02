@@ -1,7 +1,7 @@
-use crate::services::domain::MailAddressValidationService;
-use crate::services::domain::MailSenderService;
-use crate::services::domain::ValidationRequest;
-use crate::services::domain::ValidationRequestService;
+use crate::services::domain::{
+    mail::{MailAddressValidationService, MailSenderService},
+    validation::{ValidationRequest, ValidationRequestService},
+};
 
 pub enum CreateRegistrationRequestErrors {
     UnauthorizedEmail,

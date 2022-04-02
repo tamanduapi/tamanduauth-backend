@@ -1,1 +1,1 @@
-pub mod create_validation_request_ctrl;
+pub mod registration;

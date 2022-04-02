@@ -1,9 +1,14 @@
 use std::sync::Arc;
 
 use color_eyre::eyre::Result;
-use services::infra::{LettreMailSenderService, SqlxValidationRequestService, UFABCMailAddressValidationService};
+use services::infra::{
+    mail::{LettreMailSenderService, UFABCMailAddressValidationService},
+    user::SqlxUserService,
+    validation::SqlxValidationRequestService,
+};
 use simple_logger::SimpleLogger;
 use sqlx::PgPool;
+use warp::Filter;
 
 mod commands;
 mod controllers;
@@ -25,21 +30,22 @@ async fn main() -> Result<()> {
         "a1b1c1d1",
     )?);
     let addr_service = Arc::new(UFABCMailAddressValidationService);
+    let user_service = Arc::new(SqlxUserService::new(pool.clone()));
 
-    //create_registration_request(
-    //  &validation_service,
-    //  &email_service,
-    //  "aaa@bbb.com"
-    //).await?;
-
-    //let app = warp::path("v1")
-    //  .or();
-
-    let app = crate::controllers::create_validation_request_ctrl::create_filter(
+    let send_code = crate::controllers::registration::create_validation_request_ctrl::create_filter(
         validation_service.clone(),
         email_service.clone(),
         addr_service.clone(),
     );
+
+    let register = crate::controllers::registration::register_user_ctrl::create_filter(
+        validation_service.clone(),
+        user_service.clone(),
+    );
+
+    let v1 = send_code.or(register);
+
+    let app = warp::path("v1").and(v1);
 
     warp::serve(app).run(([0, 0, 0, 0], 1234)).await;
 
