@@ -50,10 +50,10 @@ pub fn create_filter(
         .and(with_validation_svc(validation_svc))
         .and(with_mail_svc(mail_svc))
         .and(with_addr_svc(addr_svc))
-        .and_then(create_validation_request)
+        .and_then(create_validation_request_handler)
 }
 
-pub async fn create_validation_request<'a>(
+async fn create_validation_request_handler(
     body: CreateValidationRequestBody,
     validation_svc: Arc<impl ValidationRequestService>,
     mail_svc: Arc<impl MailSenderService>,

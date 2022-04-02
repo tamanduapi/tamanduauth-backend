@@ -23,7 +23,7 @@ impl Into<User> for RegisterUserRequestBody {
     fn into(self) -> User {
         User {
             id: uuid::Uuid::new_v4(),
-            password: self.password,
+            password: bcrypt::hash(self.password, bcrypt::DEFAULT_COST).unwrap(),
             ra: self.ra,
             email: self.email,
         }
