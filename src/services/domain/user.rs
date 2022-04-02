@@ -12,4 +12,5 @@ pub struct User {
 pub trait UserService: Send + Sync {
     async fn user_exists(&self, email: &str) -> Result<bool>;
     async fn save_user(&self, user: &User) -> Result<()>;
+    async fn login(&self, ra: &str, password: &str) -> Result<bool>;
 }

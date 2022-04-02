@@ -42,4 +42,19 @@ impl UserService for SqlxUserService {
 
         Ok(())
     }
+
+    async fn login(&self, ra: &str, password: &str) -> Result<bool> {
+        let row = sqlx::query!(
+            "SELECT user_id FROM Users WHERE ra=$1 AND password=$2",
+            ra,
+            bcrypt::hash(password, bcrypt::DEFAULT_COST)?,
+        )
+            .fetch_one(&*self.pool)
+            .await;
+
+        match row {
+            Ok(_) => Ok(true),
+            Err(_) => Ok(false),
+        }
+    }
 }

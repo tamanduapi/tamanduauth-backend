@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use color_eyre::eyre::Result;
+use controllers::login::password_authenticate_user_ctrl;
 use services::infra::{
     mail::{LettreMailSenderService, UFABCMailAddressValidationService},
     user::SqlxUserService,
@@ -43,9 +44,14 @@ async fn main() -> Result<()> {
         user_service.clone(),
     );
 
-    let v1 = send_code.or(register);
+    let password_login = password_authenticate_user_ctrl::create_filter(
+        user_service.clone(),
+    );
 
-    let app = warp::path("v1").and(v1);
+    let registration = warp::path("registration").and(send_code.or(register));
+    let login = warp::path("login").and(password_login);
+
+    let app = warp::path("v1").and(registration.or(login));
 
     warp::serve(app).run(([0, 0, 0, 0], 1234)).await;
 
