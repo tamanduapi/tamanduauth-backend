@@ -1,0 +1,8 @@
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=a1b1c1d1
+      - POSTGRES_USER=tamanduauth
+    ports:
+      - 5432:5432
