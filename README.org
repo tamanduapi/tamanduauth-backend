@@ -1,0 +1,40 @@
+#+TITLE: Tamanduauth Backend
+
+* Intro
+Hi! This repository contains the code for the TamanduAuth backend application.
+
+The project is in a /very early/ stage. Don't take anything for granted in the
+current stage.
+
+* Running the server
+** Requirements
+- A nightly Rust toolchain (you'll probably want to install using =rustup.rs=)
+- Docker + docker-compose
+- A SMTP server
+   For development, you can use the following command:
+   #+BEGIN_SRC
+$ sudo python -m smtpd -n -c DebuggingServer localhost:25
+   #+END_SRC
+   Yes, as root. Yes, you can roll your eyes.
+- =sqlx-cli= installed. You can do this using the following command:
+  #+BEGIN_SRC
+$ cargo install sqlx-cli
+  #+END_SRC
+** Running (development)
+First, use =docker-compose= to bringup the database:
+
+  #+BEGIN_SRC
+$ docker-compose up -d
+  #+END_SRC
+
+Wait for the database to load, then run the migrations:
+
+  #+BEGIN_SRC
+$ sqlx migrate run
+  #+END_SRC
+
+After the migrations have run, you can compile and start the server using Cargo:
+
+  #+BEGIN_SRC
+$ cargo run
+  #+END_SRC
